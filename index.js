@@ -26,7 +26,9 @@ function process_input(msg) {
   }
 }
 
-var intclient = new InternalClient();
+//var key = new ndn.Key(); key.fromPemFile('./non.pub', './non.pem');
+var key = new ndn.NDN().getDefaultKey();
+var intclient = new InternalClient(key);
 intclient.register(fib);
 intclient.on('send', process_input);
 fib.provide_intclient_commands(intclient);

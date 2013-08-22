@@ -5,9 +5,9 @@ var ndn = require('ndn-on-node');
 
 // ----------------------------------------------------------------
 // class InternalClient
-var InternalClient = function InternalClient() {
+var InternalClient = function InternalClient(key) {
   EventEmitter.call(this);
-  this.key = new ndn.NDN().getDefaultKey();
+  this.key = key;
 };
 util.inherits(InternalClient, EventEmitter);
 
