@@ -51,7 +51,11 @@ InternalClient.prototype.command = function InternalClient_command(interest) {
     } catch(ex) { co = false; }
   }
   var f = this['op_'+op];
-  if (f) f(op, interest, co, this.send.bind(this));
+  if (f) {
+    f(op, interest, co, this.send.bind(this));
+  } else {
+    console.log('InternalClient.command('+op+') no operation provider');
+  }
 };
 
 // public method provide_op
@@ -60,6 +64,11 @@ InternalClient.prototype.provide_op = function InternalClient_provide_op(op, f) 
   this['op_'+op] = f;
 };
 
+// private method op_ping
+InternalClient.prototype.op_ping = function InternalClient_op_ping(op, interest, co, send_func) {
+  var reply = new ndn.ContentObject(interest.name, 'NDNSF PING ACK');
+  send_func(reply);
+};
 
 // ----------------------------------------------------------------
 exports.InternalClient = InternalClient;
