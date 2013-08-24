@@ -8,7 +8,7 @@ NDNSF is compatible with [NDNx](https://github.com/named-data/ndnx) and [CCNx](h
 
 1. Install Node.js v0.10.15 or above.
 2. Download NDNSF source code.
-3. In the directory containing NDNSF source code, execute `npm install ndn-on-node` (v0.0.18 or above).
+3. In the directory containing NDNSF source code, execute `npm install ndn-on-node` (v0.0.21 or above).
 4. Stop any other programs that listens on port 9695.
 5. Execute `nodejs .` or `node .` to start NDNSF.
 

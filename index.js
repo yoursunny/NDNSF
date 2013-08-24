@@ -2,6 +2,7 @@ var ndn = require('ndn-on-node');
 var Face = require('./face').Face;
 var StreamFace = require('./face').StreamFace;
 var TcpListener = require('./face').TcpListener;
+var WebServer = require('./websvr').WebServer;
 var FaceMgr = require('./face').FaceMgr;
 var Fib = require('./fib').Fib;
 var Pit = require('./pit').Pit;
@@ -40,4 +41,6 @@ var conn = StreamFace.tcp('e.hub.ndn.ucla.edu',9695);
 conn.send(new ndn.Interest(new ndn.Name('/ndn/arizona.edu/ping/1')));
 new_face(conn);
 fib.add(new ndn.Name('/'), conn.id);
+
+var web = new WebServer(9696);
 
