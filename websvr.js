@@ -1,18 +1,24 @@
 var http = require('http');
 var urlparse = require('url').parse;
+var WebSocketListener = require('./face').WebSocketListener;
 
 
 // ----------------------------------------------------------------
 // class WebServer
 var WebServer = function WebServer(port) {
-  this.svr = http.createServer(this.request.bind(this)).listen(port);
+  this.server = http.createServer(this.request.bind(this)).listen(port);
   this.routes = [];
   this.provide_op('/robots.txt', this.op_robots.bind(this));
 };
 
 // public method close
 WebServer.prototype.close = function WebServer_close() {
-  this.svr.close();
+  this.server.close();
+};
+
+// public method create_wslistener
+WebServer.prototype.create_wslistener = function WebServer_create_wslistener(path) {
+  return new WebSocketListener(this.server, path);
 };
 
 // private method request

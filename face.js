@@ -1,6 +1,7 @@
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 var net = require('net');
+var WebSocket = require('ws');
 var ndn = require('ndn-on-node');
 ndn.BinaryXmlElementReader = require('ndn-on-node/lib/util/BinaryXMLElementReader.js').BinaryXmlElementReader;
 
@@ -10,6 +11,7 @@ ndn.BinaryXmlElementReader = require('ndn-on-node/lib/util/BinaryXMLElementReade
 var Face = function Face() {
   EventEmitter.call(this);
   this.closed = false;
+  this.close_on_error = true;
 };
 util.inherits(Face, EventEmitter);
 
@@ -38,18 +40,24 @@ Face.prototype.sendpkt = function Face_sendpkt(pkt) {
   throw new Error('not implemented');
 };
 
+// protected property close_on_error
+
 // protected method recvpkt
 // pkt must be a complete message
 Face.prototype.recvpkt = function Face_recvpkt(pkt) {
-  var d = new ndn.BinaryXMLDecoder(pkt);
-  if (d.peekStartElement(ndn.CCNProtocolDTags.Interest)) {
-    var interest = new ndn.Interest();
-    interest.from_ccnb(d);
-    this.recv(interest);
-  } else if (d.peekStartElement(ndn.CCNProtocolDTags.ContentObject)) {
-    var co = new ndn.ContentObject();
-    co.from_ccnb(d);
-    this.recv(co);
+  try {
+    var d = new ndn.BinaryXMLDecoder(pkt);
+    if (d.peekStartElement(ndn.CCNProtocolDTags.Interest)) {
+      var interest = new ndn.Interest();
+      interest.from_ccnb(d);
+      this.recv(interest);
+    } else if (d.peekStartElement(ndn.CCNProtocolDTags.ContentObject)) {
+      var co = new ndn.ContentObject();
+      co.from_ccnb(d);
+      this.recv(co);
+    }
+  } catch(ex) {
+    if (this.close_on_error) this.close();
   }
 };
 
@@ -91,11 +99,11 @@ Face.prototype.end = function Face_end() {
 
 // ----------------------------------------------------------------
 // class StreamFace
-var StreamFace = function StreamFace(sock, address) {
+var StreamFace = function StreamFace(sock) {
   Face.call(this);
   this.sock = sock;
-  this.desc_ = this.sock.remoteAddress+':'+this.sock.remotePort;
-  this.sock.on('data', this.recvpkt.bind(this))
+  this.address = this.sock.remoteAddress+':'+this.sock.remotePort;
+  this.sock.on('data', this.recvchunk.bind(this))
   this.sock.on('end', this.end.bind(this));
   this.element_reader = new ndn.BinaryXmlElementReader({ onMessage: this.recvpkt.bind(this) });
 };
@@ -104,21 +112,22 @@ util.inherits(StreamFace, Face);
 // public static method tcp
 StreamFace.tcp = function StreamFace_tcp(host, port) {
   var sock = net.connect(port, host);
-  return new StreamFace(sock, [host,port]);
+  var face = new StreamFace(sock);
+  face.address = host+':'+port;
+  return face;
 };
 
 // public method desc
 StreamFace.prototype.desc = function StreamFace_desc(msg) {
-  return 'StreamFace('+this.id+') '+this.desc_;
+  return 'StreamFace('+this.id+') '+this.address;
 };
 
 // protected method sendpkt
 StreamFace.prototype.sendpkt = function StreamFace_sendpkt(pkt) {
-  if (!(pkt instanceof Buffer)) throw new Error('pkt is not Buffer');
   this.sock.write(pkt);
 };
 
-// private method recvpkt
+// private method recvchunk
 StreamFace.prototype.recvchunk = function StreamFace_recvchunk(chunk) {
   var buf = (chunk instanceof Buffer) ? chunk : new Buffer(chunk);
   this.element_reader.onReceivedData(buf);
@@ -152,7 +161,72 @@ TcpListener.prototype.close = function TcpListener_close() {
   if (this.closed) return;
   this.closed = true;
   this.server.close();
-}
+};
+
+
+// ----------------------------------------------------------------
+// class WebSocketFace
+var WebSocketFace = function WebSocketFace(sock) {
+  Face.call(this);
+  this.sock = sock;
+  this.address = this.sock.url ? this.sock.url : this.sock._socket.remoteAddress+':'+this.sock._socket.remotePort;
+  this.sock.on('message', this.recvwsmsg.bind(this))
+  this.sock.on('close', this.end.bind(this));
+};
+util.inherits(WebSocketFace, Face);
+
+// public static method connect
+WebSocketFace.connect = function WebSocketFace_connect(url) {
+  var sock = new WebSocket(url);
+  return new WebSocketFace(sock);
+};
+
+// public method desc
+WebSocketFace.prototype.desc = function WebSocketFace_desc(msg) {
+  return 'WebSocketFace('+this.id+') '+this.address;
+};
+
+// protected method sendpkt
+WebSocketFace.prototype.sendpkt = function WebSocketFace_sendpkt(pkt) {
+  this.sock.send(pkt, { binary:true, mask:false });
+};
+
+// private method recvwsmsg
+WebSocketFace.prototype.recvwsmsg = function WebSocketFace_recvwsmsg(pkt) {
+  this.recvpkt(pkt);
+};
+
+// protected method close_internal
+WebSocketFace.prototype.close_internal = function WebSocketFace_close_internal() {
+  this.sock.close();
+};
+
+
+
+// ----------------------------------------------------------------
+// class WebSocketListener
+var WebSocketListener = function WebSocketListener(http_server, path) {
+  EventEmitter.call(this);
+  this.closed = false;
+  this.server = new WebSocket.Server({ server:http_server, path:path });
+  this.server.on('connection', this.accept.bind(this));
+};
+util.inherits(WebSocketListener, EventEmitter);
+
+// private method accept
+WebSocketListener.prototype.accept = function WebSocketListener_accept(c) {
+  var face = new WebSocketFace(c);
+  this.emit('accept', face);
+};
+
+// public event accept(WebSocketFace)
+
+// public method close
+WebSocketListener.prototype.close = function WebSocketListener_close() {
+  if (this.closed) return;
+  this.closed = true;
+  this.server.close();
+};
 
 
 // ----------------------------------------------------------------
@@ -170,6 +244,7 @@ FaceMgr.prototype.register = function FaceMgr_register(face){
   this.faces[id] = face;
   face.id = id;
   face.on('close', this.unregister.bind(this, id));
+  console.log('FaceMgr.register() '+face.desc());
   this.emit('register', id);
 };
 
@@ -193,5 +268,7 @@ FaceMgr.prototype.get = function FaceMgr_get(id) {
 exports.Face = Face;
 exports.StreamFace = StreamFace;
 exports.TcpListener = TcpListener;
+exports.WebSocketFace = WebSocketFace;
+exports.WebSocketListener = WebSocketListener;
 exports.FaceMgr = FaceMgr;
 
