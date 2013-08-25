@@ -33,16 +33,6 @@ Pit.prototype.seek = function Pit_seek(interest) {
   return entry;
 };
 
-// public method seek
-Pit.prototype.seek2 = function Pit_seek(interest) {
-  var key = Pit.interest_key(interest);
-  var entry = this.T[key];
-  var is_new = false;
-  if (!entry) this.T[key] = entry = new PitEntry(this, interest, key);
-  if (entry.consumed) entry.reset();
-  return entry;
-};
-
 // public method match
 Pit.prototype.match = function Pit_match(co) {
   var n_matches = 0;

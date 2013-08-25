@@ -45,20 +45,23 @@ Face.prototype.sendpkt = function Face_sendpkt(pkt) {
 // protected method recvpkt
 // pkt must be a complete message
 Face.prototype.recvpkt = function Face_recvpkt(pkt) {
+  var msg = false;
   try {
     var d = new ndn.BinaryXMLDecoder(pkt);
     if (d.peekStartElement(ndn.CCNProtocolDTags.Interest)) {
       var interest = new ndn.Interest();
       interest.from_ccnb(d);
-      this.recv(interest);
+      msg = interest;
     } else if (d.peekStartElement(ndn.CCNProtocolDTags.ContentObject)) {
       var co = new ndn.ContentObject();
       co.from_ccnb(d);
-      this.recv(co);
+      msg = co;
     }
   } catch(ex) {
+    msg = false;
     if (this.close_on_error) this.close();
   }
+  if (msg !== false) this.recv(msg);
 };
 
 // protected method recv

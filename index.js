@@ -10,11 +10,13 @@ var Fib = require('./fib').Fib;
 var Pit = require('./pit').Pit;
 var InternalClient = require('./intclient').InternalClient;
 var Strategy = require('./strategy').Strategy;
+var SmartStrategy = require('./smart_strategy').SmartStrategy;
 
 var facemgr = new FaceMgr();
 var fib = new Fib(facemgr);
 var pit = new Pit();
-var strategy = new Strategy(fib, pit, facemgr);
+//var strategy = new Strategy(fib, pit, facemgr);
+var strategy = new SmartStrategy(fib, pit, facemgr);
 
 function new_face(face) {
   face.register(facemgr);

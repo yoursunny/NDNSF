@@ -24,7 +24,7 @@ Strategy.prototype.interest = function Strategy_interest(interest) {
 };
 
 // protected method propagate
-Strategy.prototype.propagate = function Strategy_propagate_interest(pe, interest) {
+Strategy.prototype.propagate = function Strategy_propagate(pe, interest) {
   var fe = this.fib.lookup(interest);
   if (!fe) {
     console.log('Strategy.propagate('+interest.name.to_uri()+') no FIB entry');
@@ -35,18 +35,22 @@ Strategy.prototype.propagate = function Strategy_propagate_interest(pe, interest
     fe.handler(interest);
   }
   // broadcast strategy
-  var sent_to = [];
-  fe.faceids.forEach(function(faceid){
-    var face = this.facemgr.get(faceid);
-    if (!face) return;
-    var nonce = pe.pick_nonce(faceid);
-    if (!nonce) return;
-    sent_to.push(faceid);
-    pe.add_upstream(faceid, nonce);
-    pe.interest.nonce = nonce;
-    face.send(pe.interest);
+  var sent_to = fe.faceids.filter(function(faceid){
+    return this.propagate_to(pe, faceid);
   }.bind(this));
   if (sent_to.length > 0) console.log('Strategy.propagate('+interest.name.to_uri()+') to '+sent_to.join());
+};
+
+// protected method propagate_to
+Strategy.prototype.propagate_to = function Strategy_propagate_to(pe, upstream, expect) {
+  var face = this.facemgr.get(upstream);
+  if (!face) return false;
+  var nonce = pe.pick_nonce(upstream);
+  if (!nonce) return false;
+  pe.add_upstream(upstream, nonce, expect);
+  pe.interest.nonce = nonce;
+  face.send(pe.interest);
+  return true;
 };
 
 // public method co
@@ -70,3 +74,4 @@ Strategy.prototype.send_co = function Strategy_send_co(faceid, co) {
 
 // ----------------------------------------------------------------
 exports.Strategy = Strategy;
+

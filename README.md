@@ -31,6 +31,7 @@ NDNSF supports the following features:
 * PIT - Pending Interest Table
 * Prefix Registration Protocol: *selfreg* command only
 * broadcast forwarding strategy
+* smart forwarding strategy
 * TCP transport
 * WebSocket transport
 
@@ -38,7 +39,6 @@ NDNSF does not yet support:
 
 * CS - Content Store
 * ForwardingFlags
-* smarter forwarding strategies
 * UDP transport
 * Face Management Protocol
 * status web page
