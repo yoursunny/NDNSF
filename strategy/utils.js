@@ -42,7 +42,10 @@ RttEstimator.prototype.rto = function RttEstimator_rto() {
 };
 
 
+// ----------------------------------------------------------------
 // class NamePrefixTable
+// NamePrefixTable is solely used for strategy decision support.
+// It does not act as FIB or PIT.
 var NamePrefixTable = function NamePrefixTable() {
   this.T = {};
 };

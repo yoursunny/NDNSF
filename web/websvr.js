@@ -1,6 +1,6 @@
 var http = require('http');
 var urlparse = require('url').parse;
-var WebSocketListener = require('./face').WebSocketListener;
+var WebSocketListener = require('../face').WebSocketListener;
 
 
 // ----------------------------------------------------------------

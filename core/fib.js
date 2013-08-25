@@ -1,5 +1,4 @@
 var ndn = require('ndn-on-node');
-ndn.BinaryXmlElementReader = require('ndn-on-node/lib/util/BinaryXMLElementReader.js').BinaryXmlElementReader;
 ndn.ForwardingEntry = require('ndn-on-node/lib/ForwardingEntry').ForwardingEntry;
 
 

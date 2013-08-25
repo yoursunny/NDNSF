@@ -1,8 +1,8 @@
 var util = require('util');
 var ndn = require('ndn-on-node');
 var Strategy = require('./strategy').Strategy;
-var RttEstimator = require('./strategy_utils').RttEstimator;
-var NamePrefixTable = require('./strategy_utils').NamePrefixTable;
+var RttEstimator = require('./utils').RttEstimator;
+var NamePrefixTable = require('./utils').NamePrefixTable;
 
 
 // ----------------------------------------------------------------
