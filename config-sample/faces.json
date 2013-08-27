@@ -1,0 +1,15 @@
+[
+  {
+    "type": "tcp", "host": "e.hub.ndn.ucla.edu", "port": 9695,
+    "fib": [
+      { "prefix": "/" }
+    ]
+  },
+  {
+    "type": "ws", "address": "ws://a.ws.ndn.ucla.edu:9696/",
+    "fib": [
+      { "prefix": "/" },
+      { "prefix": "/ndn/ucla.edu" }
+    ]
+  }
+]

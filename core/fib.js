@@ -60,14 +60,15 @@ Fib.prototype.delete_face = function Fib_delete_face(faceid) {
   }
 };
 
-// public method provide_intclient_commands
-Fib.prototype.provide_intclient_commands = function Fib_provide_intclient_commands(intclient) {
+// public method provide_intclient
+Fib.prototype.provide_intclient = function Fib_provide_intclient_commands(intclient) {
   this.intclient = intclient;
-  intclient.provide_op('selfreg', this.intclient_op.bind(this));
+  intclient.provide_op('selfreg', this.intclient_command.bind(this));
+  intclient.provide_op('fib', this.intclient_fib.bind(this));
 };
 
-// private method intclient_op
-Fib.prototype.intclient_op = function Fib_intclient_op(op, interest, co, send) {
+// private method intclient_command
+Fib.prototype.intclient_command = function Fib_intclient_op(op, interest, co, send_func) {
   var d = new ndn.BinaryXMLDecoder(co.content);
   var fe = new ndn.ForwardingEntry();
   fe.from_ccnb(d);
@@ -87,7 +88,17 @@ Fib.prototype.intclient_op = function Fib_intclient_op(op, interest, co, send) {
   fe.ccndID = this.intclient.ndndid();
   fe.lifetime = 3600;
   
-  send(new ndn.ContentObject(interest.name, fe.encodeToBinary()));
+  send_func(new ndn.ContentObject(interest.name, fe.encodeToBinary()));
+};
+
+// private method intclient_fib
+Fib.prototype.intclient_fib = function Fib_intclient_fib(op, interest, co, send_func) {
+  var fiblist = [];
+  for (var uri in this.T) {
+    var entry = this.T[uri];
+    fiblist.push({ prefix:uri, faceids:entry.faceids.concat(entry.handler?[0]:[]) });
+  }
+  send_func(new ndn.ContentObject(interest.name, JSON.stringify(fiblist)));
 };
 
 

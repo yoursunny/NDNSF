@@ -1,0 +1,8 @@
+{
+  "listen_tcp": { "port": 9695 },
+  "listen_web": { "port": 9696, "ws": "/" },
+  
+  "mgr_base": "http://yoursunny.com/p/NDNSF/",
+  
+  "strategy_type": "SmartStrategy"
+}

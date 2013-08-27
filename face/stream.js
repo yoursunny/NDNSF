@@ -54,6 +54,7 @@ var TcpListener = function TcpListener(port) {
   EventEmitter.call(this);
   this.closed = false;
   this.server = net.createServer(this.accept.bind(this)).listen(port);
+  console.log('TcpListener('+port+')');
 };
 util.inherits(TcpListener, EventEmitter);
 

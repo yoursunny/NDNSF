@@ -7,6 +7,7 @@ var WebSocketListener = require('../face').WebSocketListener;
 // class WebServer
 var WebServer = function WebServer(port) {
   this.server = http.createServer(this.request.bind(this)).listen(port);
+  console.log('WebServer('+port+')');
   this.routes = [];
   this.provide_op('/robots.txt', this.op_robots.bind(this));
 };
@@ -23,9 +24,10 @@ WebServer.prototype.create_wslistener = function WebServer_create_wslistener(pat
 
 // private method request
 WebServer.prototype.request = function WebServer_request(req, resp) {
+  console.log('WebServer.request('+req.url+')');
   var parsed;
   try { parsed = urlparse(req.url, true); }
-  catch(ex) { resp.writeHead(400); resp.end(); }
+  catch(ex) { resp.writeHead(400); resp.end(); return; }
   for (var i=0; i<this.routes.length; ++i) {
     var route = this.routes[i];
     var m = false;

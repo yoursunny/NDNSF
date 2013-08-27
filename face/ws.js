@@ -51,6 +51,7 @@ var WebSocketListener = function WebSocketListener(http_server, path) {
   this.closed = false;
   this.server = new WebSocket.Server({ server:http_server, path:path });
   this.server.on('connection', this.accept.bind(this));
+  console.log('WebSocketListener('+path+')');
 };
 util.inherits(WebSocketListener, EventEmitter);
 

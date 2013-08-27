@@ -15,7 +15,7 @@ NDNSF is compatible with [NDNx](https://github.com/named-data/ndnx) and [CCNx](h
 
 ## Usage
 
-* A TCP connection to e.hub.ndn.ucla.edu is made automatically, and a WebSocket connection to ws://a.ws.ndn.ucla.edu:9696/ is made automatically. FIB entry ndn:/ is added towards these faces. There's currently no way to make a new outgoing connection.
+* Rename config-sample directory to config, and modify configuration files.
 * Ask local apps to use TCP transport instead of UNIX sockets:
     * NDN-On-Node apps can be used directly.
     * NDNx apps need `NDN_LOCAL_TRANSPORT=tcp` environment variable.
@@ -34,6 +34,7 @@ NDNSF supports the following features:
 * smart forwarding strategy
 * TCP transport
 * WebSocket transport
+* [status web page](http://localhost:9696) with operator key authentication
 
 NDNSF does not yet support:
 
@@ -41,5 +42,4 @@ NDNSF does not yet support:
 * ForwardingFlags
 * UDP transport
 * Face Management Protocol
-* status web page
 

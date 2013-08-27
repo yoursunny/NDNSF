@@ -1,5 +1,6 @@
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
+var ndn = require('ndn-on-node');
 
 
 // ----------------------------------------------------------------
@@ -34,6 +35,21 @@ FaceMgr.prototype.unregister = function FaceMgr_unregister(faceid){
 // public method get
 FaceMgr.prototype.get = function FaceMgr_get(id) {
   return this.faces[id];
+};
+
+// public method provide_intclient
+FaceMgr.prototype.provide_intclient = function FaceMgr_provide_intclient(intclient) {
+  intclient.provide_op('faces', this.intclient_faces.bind(this));
+};
+
+// private method intclient_faces
+FaceMgr.prototype.intclient_faces = function FaceMgr_intclient_faces(op, interest, co, send_func) {
+  var facelist = [];
+  for (var id in this.faces) {
+    var face = this.faces[id];
+    facelist.push({ id:parseInt(id), desc:face.desc() });
+  }
+  send_func(new ndn.ContentObject(interest.name, JSON.stringify(facelist)));
 };
 
 
