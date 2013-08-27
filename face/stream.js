@@ -13,6 +13,7 @@ var StreamFace = function StreamFace(sock) {
   this.sock = sock;
   this.address = this.sock.remoteAddress+':'+this.sock.remotePort;
   this.sock.on('data', this.recvchunk.bind(this))
+  this.sock.on('error', this.end.bind(this));
   this.sock.on('end', this.end.bind(this));
   this.element_reader = new ndn.BinaryXmlElementReader({ onMessage: this.recvpkt.bind(this) });
 };

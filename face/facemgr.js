@@ -26,8 +26,9 @@ FaceMgr.prototype.register = function FaceMgr_register(face){
 
 // private method unregister
 FaceMgr.prototype.unregister = function FaceMgr_unregister(faceid){
-  delete this.faces[faceid];
+  console.log('FaceMgr.unregister() '+this.faces[faceid].desc());
   this.emit('unregister', faceid);
+  delete this.faces[faceid];
 };
 
 // public event unregister(faceid)
