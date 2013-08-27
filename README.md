@@ -2,7 +2,7 @@
 
 NDNSF is a lightweight [Named Data Networking](http://www.named-data.net/) forwarder based on [NDN-On-Node](https://github.com/named-data/NDN-On-Node). NDNSF is probably the first NDN forwarder that runs on Windows.
 
-NDNSF is compatible with [NDNx](https://github.com/named-data/ndnx) and [CCNx](http://www.ccnx.org/). NDNSF is not designed for speed, and is not a replacement of ndnd or [NDNFD](https://github.com/NDN-Routing/NDNFD).
+NDNSF is compatible with [NDNx](https://github.com/named-data/ndnx) and [CCNx](http://www.ccnx.org/). NDNSF is not designed for speed, and is not a replacement of ndnd or [NDNFD](https://github.com/NDN-Routing/NDNFD). NDNSF is not endorsed by NDN project group.
 
 ## Installation
 
@@ -22,6 +22,7 @@ NDNSF is compatible with [NDNx](https://github.com/named-data/ndnx) and [CCNx](h
     * CCNx apps need `CCN_LOCAL_TRANSPORT=tcp` environment variable.
 * A WebSocketListener listens on port 9696.
     * NDN-JS apps can connect to `ws://localhost:9696/`
+* Access NDNSF manager webapp at <http://localhost:9696/>
 
 ## Features
 
@@ -34,7 +35,7 @@ NDNSF supports the following features:
 * smart forwarding strategy
 * TCP transport
 * WebSocket transport
-* [status web page](http://localhost:9696) with operator key authentication
+* status web page with operator key authentication
 
 NDNSF does not yet support:
 
