@@ -9,6 +9,7 @@ var WebServer = function WebServer(port) {
   this.server = http.createServer(this.request.bind(this)).listen(port);
   console.log('WebServer('+port+')');
   this.routes = [];
+  this.provide_op('/', this.op_index.bind(this));
   this.provide_op('/robots.txt', this.op_robots.bind(this));
 };
 
@@ -47,6 +48,11 @@ WebServer.prototype.request = function WebServer_request(req, resp) {
 // handler(req, resp, url_parsed, url_match)
 WebServer.prototype.provide_op = function WebServer_provide_op(pattern, handler) {
   this.routes.push({ pattern:pattern, handler:handler });
+};
+
+// private method op_index
+WebServer.prototype.op_index = function WebServer_op_index(req, resp) {
+  resp.end('<!doctype html><title>NDNSF</title><h1>NDNSF - NDN Slim Forwarder</h1><p><a href="http://yoursunny.com/p/NDNSF/">NDNSF homepage</a><p><a href="/mgr">NDNSF Manager</a>');
 };
 
 // private method op_robots

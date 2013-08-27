@@ -88,7 +88,7 @@ InternalClient.prototype.op_verify_operator_key = function InternalClient_op_ver
 
 // public method provide_web
 InternalClient.prototype.provide_web = function InternalClient_provide_web(websvr, mgr_base) {
-  websvr.provide_op(/^\/$/, this.web_mgr_redirect.bind(this, mgr_base));
+  websvr.provide_op('/mgr', this.web_mgr_redirect.bind(this, mgr_base));
 };
 
 // private static property web_mgr_base
