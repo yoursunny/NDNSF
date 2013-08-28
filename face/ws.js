@@ -12,6 +12,7 @@ var WebSocketFace = function WebSocketFace(sock) {
   this.sock = sock;
   this.address = this.sock.url ? this.sock.url : this.sock._socket.remoteAddress+':'+this.sock._socket.remotePort;
   this.sock.on('message', this.recvwsmsg.bind(this))
+  this.sock.on('error', this.end.bind(this));
   this.sock.on('close', this.end.bind(this));
 };
 util.inherits(WebSocketFace, Face);
