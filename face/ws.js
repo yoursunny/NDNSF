@@ -29,6 +29,10 @@ WebSocketFace.prototype.desc = function WebSocketFace_desc(msg) {
 
 // protected method sendpkt
 WebSocketFace.prototype.sendpkt = function WebSocketFace_sendpkt(pkt) {
+  if (this.sock.readyState != WebSocket.OPEN) {
+    console.log('WebSocketFace('+this.id+').sendpkt() not OPEN');
+    return;
+  }
   this.sock.send(pkt, { binary:true, mask:false });
 };
 
