@@ -43,7 +43,7 @@ if (fs.existsSync('config/faces.json')) {
   config.faces = JSON.parse(fs.readFileSync('config/faces.json'));
 }
 if (fs.existsSync('config/operators.txt')) {
-  config.operators = fs.readFileSync('config/operators.txt','utf8').split('\n');
+  config.operators = fs.readFileSync('config/operators.txt','utf8').split('\n').map(function(s){ return s.trim(); });
 }
 
 // ----------------------------------------------------------------
