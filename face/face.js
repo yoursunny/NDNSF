@@ -8,7 +8,12 @@ var ndn = require('ndn-on-node');
 var Face = function Face() {
   EventEmitter.call(this);
   this.closed = false;
-  this.close_on_error = true;
+  this.counters = {
+    SI:0,// sent Interests
+    SC:0,// sent ContentObjects
+    RI:0,// received Interests
+    RC:0,// received ContentObjects
+  };
 };
 util.inherits(Face, EventEmitter);
 
@@ -23,9 +28,13 @@ Face.prototype.desc = function Face_desc(msg) {
   throw new Error('not implemented');
 };
 
+// internal property counters, used by FaceMgr
+
 // public method send
 Face.prototype.send = function Face_send(msg) {
   if (this.closed) return;
+  if (msg instanceof ndn.Interest) ++this.counters.SI;
+  if (msg instanceof ndn.ContentObject) ++this.counters.SC;
   if (msg instanceof ndn.Interest || msg instanceof ndn.ContentObject) {
     var pkt = msg.encodeToBinary();
     this.sendpkt(pkt);
@@ -38,6 +47,7 @@ Face.prototype.sendpkt = function Face_sendpkt(pkt) {
 };
 
 // protected property close_on_error
+Face.prototype.close_on_error = true;
 
 // protected method recvpkt
 // pkt must be a complete message
@@ -65,6 +75,8 @@ Face.prototype.recvpkt = function Face_recvpkt(pkt) {
 // protected method recv
 Face.prototype.recv = function Face_recv(msg) {
   if (this.closed) return;
+  if (msg instanceof ndn.Interest) ++this.counters.RI;
+  if (msg instanceof ndn.ContentObject) ++this.counters.RC;
   msg.incoming_face = this.id;
   this.emit('recv', msg);
 };

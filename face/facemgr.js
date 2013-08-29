@@ -48,7 +48,7 @@ FaceMgr.prototype.intclient_faces = function FaceMgr_intclient_faces(op, interes
   var facelist = [];
   for (var id in this.faces) {
     var face = this.faces[id];
-    facelist.push({ id:parseInt(id), desc:face.desc() });
+    facelist.push({ id:parseInt(id), desc:face.desc(), counters:face.counters });
   }
   send_func(new ndn.ContentObject(interest.name, JSON.stringify(facelist)));
 };
