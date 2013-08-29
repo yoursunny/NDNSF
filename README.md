@@ -8,16 +8,16 @@ NDNSF is compatible with [NDNx](https://github.com/named-data/ndnx) and [CCNx](h
 
 1. Install Node.js v0.10.15 or above.
 2. Download NDNSF source code.
-3. In the directory containing NDNSF source code, execute `npm install ndn-on-node` (v0.0.21 or above).
-3. In the directory containing NDNSF source code, execute `npm install ws` (v0.4.29 or above).
-4. Stop any other programs that listens on port 9695 and 9696.
-5. Execute `nodejs .` or `node .` to start NDNSF.
+3. Install dependencies: `npm install ndn-on-node ws`
+4. Create configuration files: `cp -r config-sample config` (on linux) or `XCOPY /E config-sample config\` (on Windows)
+5. Modify configuration files config/* if desired.
 
 ## Usage
 
-* Rename config-sample directory to config, and modify configuration files.
+* Start NDNSF by executing `nodejs .` or `node .` in NDNSF code directory.
+    * Make sure any other programs that listens on port 9695 and 9696 are stopped.
 * Ask local apps to use TCP transport instead of UNIX sockets:
-    * NDN-On-Node apps can be used directly.
+    * NDN-On-Node apps and CCNx Java apps can be used directly.
     * NDNx apps need `NDN_LOCAL_TRANSPORT=tcp` environment variable.
     * CCNx apps need `CCN_LOCAL_TRANSPORT=tcp` environment variable.
 * A WebSocketListener listens on port 9696.
