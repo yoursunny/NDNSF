@@ -1,8 +1,10 @@
 # NDNSF - NDN Slim Forwarder
 
-NDNSF is a lightweight [Named Data Networking](http://www.named-data.net/) forwarder based on [NDN-On-Node](https://github.com/named-data/NDN-On-Node). NDNSF is probably the first NDN forwarder that runs on Windows.
+[NDNSF](http://yoursunny.com/p/NDNSF/) is a lightweight [Named Data Networking](http://www.named-data.net/) forwarder based on [NDN-On-Node](https://github.com/named-data/NDN-On-Node), compatible with [NDNx](https://github.com/named-data/ndnx) and [CCNx](http://www.ccnx.org/).
+NDNSF is tested on Ubuntu 12.04 and Windows 7.
 
-NDNSF is compatible with [NDNx](https://github.com/named-data/ndnx) and [CCNx](http://www.ccnx.org/). NDNSF is not designed for speed, and is not a replacement of ndnd or [NDNFD](https://github.com/NDN-Routing/NDNFD). NDNSF is not endorsed by NDN project group.
+NDNSF is not designed for speed, and is not a replacement of ndnd or [NDNFD](https://github.com/NDN-Routing/NDNFD).
+NDNSF is not endorsed by NDN project group.
 
 ## Installation
 
@@ -16,11 +18,10 @@ NDNSF is compatible with [NDNx](https://github.com/named-data/ndnx) and [CCNx](h
 
 * Start NDNSF by executing `nodejs .` or `node .` in NDNSF code directory.
     * Make sure any other programs that listens on port 9695 and 9696 are stopped.
-* Ask local apps to use TCP transport instead of UNIX sockets:
+* Ask local apps to use TCP or WebSocket transport instead of UNIX sockets:
     * NDN-On-Node apps and CCNx Java apps can be used directly.
     * NDNx apps need `NDN_LOCAL_TRANSPORT=tcp` environment variable.
     * CCNx apps need `CCN_LOCAL_TRANSPORT=tcp` environment variable.
-* A WebSocketListener listens on port 9696.
     * NDN-JS apps can connect to `ws://localhost:9696/`
 * Access NDNSF manager webapp at <http://localhost:9696/>
 
