@@ -67,7 +67,7 @@ NamePrefixTable.prototype.entry_seek = function NamePrefixTable_entry_seek(name,
 
 // private method entry_expiry
 NamePrefixTable.prototype.entry_expiry = function NamePrefixTable_entry_expiry(name_key) {
-  var now = Date.now;
+  var now = Date.now();
   var entry = this.T[name_key];
   if (now >= entry._expiry) {
     delete this.T[name_key];
